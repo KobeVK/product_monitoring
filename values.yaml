@@ -1,0 +1,16 @@
+imageParts:
+  host: masked
+  repository: masekd
+  tag: 1.0.0
+  digest: masked
+params: # to pull from jenkins using script
+  Landscape:
+  clusterName:
+  projectName:
+  username:
+  password:
+pullSecrets:
+- host: masked
+  authentication:
+    username: masked
+    password: masked

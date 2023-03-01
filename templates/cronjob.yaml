@@ -1,0 +1,38 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: e2esmoketestcron
+  namespace: cron-e2e-chart
+spec: #cronjob spec
+  schedule: "0,15,30,45 * * * *"
+  jobTemplate:
+    spec: #job spec
+      activeDeadlineSeconds: 1000
+      backoffLimit: 1
+      template: #pod template spec
+        metadata:
+          labels:
+            app: cron-batch-job
+        spec: #pod spec
+          restartPolicy: OnFailure                                
+          containers:
+            - name: e2e-tests
+              image: {{ .Values.imageParts.host }}/{{( .Values.imageParts.repository )}}:{{( .Values.imageParts.tag )}}
+              args: [
+                "/bin/sh",
+                "-c",
+                "npm run runTests" 
+                ]
+              env:
+                - name: projectName
+                  value: "{{ .Values.params.projectName }}"
+                - name: clusterName
+                  value: "{{ .Values.params.clusterName }}"
+                - name: Landscape
+                  value: "{{ .Values.params.Landscape }}"
+                - name: username
+                  value: "{{ .Values.params.username }}"
+                - name: password
+                  value: "{{ .Values.params.password }}"
+          imagePullSecrets:
+          - name: docker-images-secret-cronjobs
